@@ -224,15 +224,6 @@ function renderWalletSummary(walletDP, walletWD, normalizedShop) {
       createDateCard(`${type} Deposit - ${date}`, walletSums);
     });
   });
-
-  const wdDates = new Set(wdShop.map(r => r.Date));
-  Array.from(wdDates).sort((a,b) => new Date(a)-new Date(b)).forEach(date => {
-    const wallets = wdShop.filter(r => r.Date === date);
-    const walletSums = {};
-    wallets.forEach(r => { walletSums[r.Wallet.trim()] = (walletSums[r.Wallet.trim()]||0)+parseNumber(r.Amount); });
-    createDateCard(`Withdrawal - ${date}`, walletSums);
-  });
-
   // ------------------------------
   // Wallet Summary Download
   // ------------------------------
