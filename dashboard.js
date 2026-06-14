@@ -40,6 +40,8 @@ const normalize = row => {
 
 let rawData = [], cachedData = [], filteredData = [];
 let currentPage = 1, rowsPerPage = 20;
+let sortColumn = "";
+let sortDirection = 1; // 1=asc, -1=desc
 
 /* -------------------------
    Fetch & Build Summary
@@ -72,10 +74,40 @@ function buildSummary(data){
     summary[shop]["WALLET NUMBER"] = r["WALLET NUMBER"] || summary[shop]["WALLET NUMBER"];
   });
   cachedData = Object.values(summary);
-  filteredData = cachedData;
+  filteredData = [...cachedData];
   renderTable();
 }
+function sortData(column) {
 
+  if (sortColumn === column) {
+    sortDirection *= -1;
+  } else {
+    sortColumn = column;
+    sortDirection = 1;
+  }
+
+  filteredData.sort((a, b) => {
+
+    if (column === "SHOP NAME") {
+      return sortDirection *
+        String(a[column] || "")
+          .localeCompare(String(b[column] || ""));
+    }
+
+    if (column === "RUNNING BALANCE") {
+      return sortDirection *
+        (
+          (parseNumber(a[column]) || 0) -
+          (parseNumber(b[column]) || 0)
+        );
+    }
+
+    return 0;
+  });
+
+  currentPage = 1;
+  renderTable();
+}
 /* -------------------------
    Render Table & Totals
 ------------------------- */
@@ -84,9 +116,29 @@ function renderTable(){
   const tableBody = document.getElementById("tableBody");
   tableHead.innerHTML = ""; tableBody.innerHTML = "";
 
-  HEADERS.forEach(h=>{
-    const th=document.createElement("th"); th.textContent=h; tableHead.appendChild(th);
-  });
+  HEADERS.forEach(h => {
+
+  const th = document.createElement("th");
+  th.textContent = h;
+
+  if (h === "SHOP NAME" || h === "RUNNING BALANCE") {
+
+    th.style.cursor = "pointer";
+    th.title = "Click to sort";
+
+    if (sortColumn === h) {
+      th.textContent =
+        h + (sortDirection === 1 ? " ▲" : " ▼");
+    }
+
+    th.addEventListener("click", () => {
+      sortData(h);
+    });
+  }
+
+  tableHead.appendChild(th);
+
+});
 
   const start = (currentPage-1)*rowsPerPage;
   const pageData = filteredData.slice(start, start+rowsPerPage);
@@ -174,9 +226,33 @@ function filterData(){
     const matchSearch = (r["SHOP NAME"]||"").toUpperCase().includes(search);
     return matchLeader && matchGroup && matchSearch;
   });
-  currentPage = 1; renderTable();
+  currentPage = 1;
+
+if (sortColumn) {
+
+  filteredData.sort((a, b) => {
+
+    if (sortColumn === "SHOP NAME") {
+      return sortDirection *
+        String(a[sortColumn] || "")
+          .localeCompare(String(b[sortColumn] || ""));
+    }
+
+    if (sortColumn === "RUNNING BALANCE") {
+      return sortDirection *
+        (
+          (parseNumber(a[sortColumn]) || 0) -
+          (parseNumber(b[sortColumn]) || 0)
+        );
+    }
+
+    return 0;
+  });
+
 }
 
+renderTable();
+}
 /* -------------------------
    CSV Export
 ------------------------- */
