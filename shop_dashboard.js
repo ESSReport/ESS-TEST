@@ -225,28 +225,105 @@ function renderWalletSummary(walletDP, walletWD, normalizedShop) {
     });
   });
   // ------------------------------
-  // Wallet Summary Download
-  // ------------------------------
-  document.getElementById("downloadWalletBtn").addEventListener("click", () => {
-    const allData = [...dpShop, ...wdShop];
-    const columns = ["Wallet","Reference","Amount","Date","Type","Shop Name"];
-    const csvRows = [columns.join(",")];
-    allData.forEach(r => {
-      const row = columns.map(col => `"${(r[col]||"").toString().replace(/"/g,'""')}"`);
-      csvRows.push(row.join(","));
-    });
-    const csvString = csvRows.join("\n");
-    const blob = new Blob([csvString], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${shopName}_wallet_summary.csv`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+// Wallet Summary Download
+// ------------------------------
+document.getElementById("downloadWalletBtn").addEventListener("click", () => {
+
+  const allData = [...dpShop, ...wdShop];
+
+  // =========================
+  // Sheet 1 : Wallet Details
+  // =========================
+  const rawData = allData.map(r => ({
+    Wallet: r.Wallet || "",
+    Reference: r.Reference || "",
+    Amount: parseNumber(r.Amount),
+    Date: r.Date || "",
+    Type: r.Type || "",
+    ShopName: r["Shop Name"] || ""
+  }));
+
+  // =========================
+  // Sheet 2 : Daily Summary
+  // =========================
+  const summary = {};
+
+  allData.forEach(r => {
+
+    const date = (r.Date || "").trim();
+    const wallet = (r.Wallet || "").trim();
+    const type = (r.Type || "").toUpperCase().trim();
+    const amount = parseNumber(r.Amount);
+
+    const key = `${date}|${wallet}`;
+
+    if (!summary[key]) {
+      summary[key] = {
+        Date: date,
+        Wallet: wallet,
+        AUTO_AMOUNT: 0,
+        MANUAL_AMOUNT: 0,
+        WITHDRAW_AMOUNT: 0
+      };
+    }
+
+    if (type === "AUTO") {
+      summary[key].AUTO_AMOUNT += amount;
+    }
+    else if (type === "MANUAL") {
+      summary[key].MANUAL_AMOUNT += amount;
+    }
+    else if (
+      type === "WITHDRAWAL" ||
+      type === "WITHDRAW"
+    ) {
+      summary[key].WITHDRAW_AMOUNT += amount;
+    }
+
   });
-}
+
+  const summaryRows = Object.values(summary)
+    .sort((a, b) => {
+
+      const dateCompare =
+        new Date(a.Date) - new Date(b.Date);
+
+      if (dateCompare !== 0) {
+        return dateCompare;
+      }
+
+      return a.Wallet.localeCompare(b.Wallet);
+
+    });
+
+  // =========================
+  // Create Workbook
+  // =========================
+  const wb = XLSX.utils.book_new();
+
+  // Sheet 1
+  const ws1 = XLSX.utils.json_to_sheet(rawData);
+  XLSX.utils.book_append_sheet(
+    wb,
+    ws1,
+    "Wallet Details"
+  );
+
+  // Sheet 2
+  const ws2 = XLSX.utils.json_to_sheet(summaryRows);
+  XLSX.utils.book_append_sheet(
+    wb,
+    ws2,
+    "Daily Summary"
+  );
+
+  // Download
+  XLSX.writeFile(
+    wb,
+    `${shopName}_wallet_summary.xlsx`
+  );
+
+});
 
 // ------------------------------
 // CSV Download Function
