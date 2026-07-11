@@ -5,7 +5,7 @@
 /* -------------------------
    Configuration / Helpers
 ------------------------- */
-const SHEET_ID = "11CZN7Php6iijCTR0OiMtHqbmhjxHexHBZHb58gUN634";
+const SHEET_ID = "1W-NsM9F2452bh2bCioxH8jLKUzwqFLLVXTwP6buelVg";
 const OPENSHEET_BASE = `https://opensheet.elk.sh/${SHEET_ID}`;
 const OPENSHEET = {
   SHOPS_BALANCE: `${OPENSHEET_BASE}/SHOPS%20BALANCE`,
@@ -14,8 +14,8 @@ const OPENSHEET = {
   STLM: `${OPENSHEET_BASE}/STLM%2FTOPUP`,
   COMM: `${OPENSHEET_BASE}/COMM`,
 
-  WALLET_DP: `https://opensheet.elk.sh/1lYGfU_-ZEj1Bwp6Ocrn3Vkd2mYmxdi8WLOB8AhWsRHE/DP`,
-  WALLET_WD: `https://opensheet.elk.sh/1lYGfU_-ZEj1Bwp6Ocrn3Vkd2mYmxdi8WLOB8AhWsRHE/WD`
+  WALLET_DP: `https://opensheet.elk.sh/1k2IB981jPD59pS-XSQsoBZ1BaAEblxNCu3t_RS9ymUU/DP`,
+  WALLET_WD: `https://opensheet.elk.sh/1k2IB981jPD59pS-XSQsoBZ1BaAEblxNCu3t_RS9ymUU/WD`
 };
 
 const HEADERS = [
