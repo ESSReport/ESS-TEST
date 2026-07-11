@@ -1,15 +1,15 @@
 // ------------------------------
 // Configuration
 // ------------------------------
-const SHEET_ID = "11CZN7Php6iijCTR0OiMtHqbmhjxHexHBZHb58gUN634";
+const SHEET_ID = "1W-NsM9F2452bh2bCioxH8jLKUzwqFLLVXTwP6buelVg";
 const SHEETS = {
   DEPOSIT: `https://opensheet.elk.sh/${SHEET_ID}/TOTAL%20DEPOSIT`,
   WITHDRAWAL: `https://opensheet.elk.sh/${SHEET_ID}/TOTAL%20WITHDRAWAL`,
   STLM: `https://opensheet.elk.sh/${SHEET_ID}/STLM%2FTOPUP`,
   COMM: `https://opensheet.elk.sh/${SHEET_ID}/COMM`,
   SHOP_BALANCE: `https://opensheet.elk.sh/${SHEET_ID}/SHOPS%20BALANCE`,
-  WALLET_DP: `https://opensheet.elk.sh/1kYauM_lC-6EFmzGy0w4ansnWb5rVmF5oiJAdhkze6fE/DP`,
-  WALLET_WD: `https://opensheet.elk.sh/1kYauM_lC-6EFmzGy0w4ansnWb5rVmF5oiJAdhkze6fE/WD`
+  WALLET_DP: `https://opensheet.elk.sh/1k2IB981jPD59pS-XSQsoBZ1BaAEblxNCu3t_RS9ymUU/DP`,
+  WALLET_WD: `https://opensheet.elk.sh/1k2IB981jPD59pS-XSQsoBZ1BaAEblxNCu3t_RS9ymUU/WD`
 };
 
 const shopName = new URLSearchParams(window.location.search).get("shopName") || "";
